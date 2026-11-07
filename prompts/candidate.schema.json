@@ -1,0 +1,296 @@
+﻿{
+  "$defs": {
+    "All": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "all",
+          "title": "Op",
+          "type": "string"
+        },
+        "children": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all": "#/$defs/All",
+                "any": "#/$defs/AnyOf",
+                "atom": "#/$defs/Atom",
+                "not": "#/$defs/Not"
+              },
+              "propertyName": "op"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Atom"
+              },
+              {
+                "$ref": "#/$defs/Not"
+              },
+              {
+                "$ref": "#/$defs/All"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Children",
+          "type": "array"
+        }
+      },
+      "required": [
+        "op",
+        "children"
+      ],
+      "title": "All",
+      "type": "object"
+    },
+    "AnyOf": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "any",
+          "title": "Op",
+          "type": "string"
+        },
+        "children": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "all": "#/$defs/All",
+                "any": "#/$defs/AnyOf",
+                "atom": "#/$defs/Atom",
+                "not": "#/$defs/Not"
+              },
+              "propertyName": "op"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/Atom"
+              },
+              {
+                "$ref": "#/$defs/Not"
+              },
+              {
+                "$ref": "#/$defs/All"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Children",
+          "type": "array"
+        }
+      },
+      "required": [
+        "op",
+        "children"
+      ],
+      "title": "AnyOf",
+      "type": "object"
+    },
+    "Atom": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "atom",
+          "title": "Op",
+          "type": "string"
+        },
+        "name": {
+          "enum": [
+            "confidential",
+            "external",
+            "approved"
+          ],
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op",
+        "name"
+      ],
+      "title": "Atom",
+      "type": "object"
+    },
+    "DraftItem": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "pattern": "^[1-9][0-9]*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_text": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Source Text",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "refused"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "rule": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PolicyRule"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "explanation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Explanation"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_text",
+        "status"
+      ],
+      "title": "DraftItem",
+      "type": "object"
+    },
+    "Not": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "not",
+          "title": "Op",
+          "type": "string"
+        },
+        "child": {
+          "discriminator": {
+            "mapping": {
+              "all": "#/$defs/All",
+              "any": "#/$defs/AnyOf",
+              "atom": "#/$defs/Atom",
+              "not": "#/$defs/Not"
+            },
+            "propertyName": "op"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Atom"
+            },
+            {
+              "$ref": "#/$defs/Not"
+            },
+            {
+              "$ref": "#/$defs/All"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            }
+          ],
+          "title": "Child"
+        }
+      },
+      "required": [
+        "op",
+        "child"
+      ],
+      "title": "Not",
+      "type": "object"
+    },
+    "PolicyRule": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "source_text": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Source Text",
+          "type": "string"
+        },
+        "effect": {
+          "enum": [
+            "ALLOW",
+            "BLOCK",
+            "HUMAN_REVIEW"
+          ],
+          "title": "Effect",
+          "type": "string"
+        },
+        "condition": {
+          "discriminator": {
+            "mapping": {
+              "all": "#/$defs/All",
+              "any": "#/$defs/AnyOf",
+              "atom": "#/$defs/Atom",
+              "not": "#/$defs/Not"
+            },
+            "propertyName": "op"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Atom"
+            },
+            {
+              "$ref": "#/$defs/Not"
+            },
+            {
+              "$ref": "#/$defs/All"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            }
+          ],
+          "title": "Condition"
+        }
+      },
+      "required": [
+        "id",
+        "source_text",
+        "effect",
+        "condition"
+      ],
+      "title": "PolicyRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "items": {
+      "items": {
+        "$ref": "#/$defs/DraftItem"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Items",
+      "type": "array"
+    }
+  },
+  "required": [
+    "items"
+  ],
+  "title": "PolicyDraft",
+  "type": "object"
+}
